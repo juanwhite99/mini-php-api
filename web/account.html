@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+ 
+        <title>Rest API Authentication Example</title>
+ 
+        <!-- Bootstrap 4 CSS and custom CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous" />
+        <link rel="stylesheet" type="text/css" href="custom.css" />
+     </head>
+<body>
+
+<!-- navbar -->
+<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+    <a class="navbar-brand" href="./">Navbar</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="navbar-nav">
+            <a class="nav-item nav-link" href="./home.html" id='home'>Home</a>
+            <a class="nav-item nav-link" href="#" id='update_account'>Account</a>
+            <a class="nav-item nav-link" href="#" id='logout'>Logout</a>
+            <a class="nav-item nav-link" href="./login.html" id='login'>Login</a>
+            <a class="nav-item nav-link" href="./signup.html" id='sign_up'>Sign Up</a>
+        </div>
+    </div>
+</nav>
+<!-- /navbar -->
+
+<!-- container -->
+<h2>Update Account</h2>
+<form id='update_account_form'>
+    <div class="form-group">
+        <label for="firstname">Firstname</label>
+        <input type="text" class="form-control" name="firstname" id="firstname" required value="` + result.data.firstname + `" />
+    </div>
+
+    <div class="form-group">
+        <label for="lastname">Lastname</label>
+        <input type="text" class="form-control" name="lastname" id="lastname" required value="` + result.data.lastname + `" />
+    </div>
+
+    <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" class="form-control" name="email" id="email" required value="` + result.data.email + `" />
+    </div>
+
+    <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" class="form-control" name="password" id="password" />
+    </div>
+
+    <button type='button' class='btn btn-primary' id="update-account">
+        Save Changes
+    </button>
+</form>
+<!-- /container -->
+
+<!-- jQuery & Bootstrap 4 JavaScript libraries -->
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<script src="./js/token-validation.js" ></script>
+
+<script>
+    // jQuery codes
+    $(document).ready(function(){
+        var x = tokenValidation();
+        console.log(x);
+
+
+        $('#update-account').on('click', () => {
+            // get form data
+            var updateAccountForm = $('#update_account_form').serializeArray();
+            var jwt = getCookie('jwt');
+            var datax = {};
+
+            datax['jwt'] = jwt;
+            $(updateAccountForm).each(function(index, obj){
+                datax[obj.name] = obj.value;
+            });
+            var datax = JSON.stringify(datax);
+
+            // submit form data to api
+            $.ajax({
+                url: "../api/user/update.php",
+                type : "POST",
+                contentType : 'application/json',
+                data: datax,
+                success: function(result) {
+                    $('#response').html("<div class='alert alert-success'>User successfully updated.</div>");
+                },
+                error: function(xhr, resp, text){
+                    $('#response').html("<div class='alert alert-danger'>Unable to update the user.</div>");
+                }
+            });
+        });
+    });
+</script>
+ 
+</body>
+</html>
